@@ -1,3 +1,6 @@
+## [1.0.3]
+
+- chore: remove flutter sdk dependencies
 ## [1.0.2]
 
 - docs: improve documentation and code comments
