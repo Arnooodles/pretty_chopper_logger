@@ -24,6 +24,6 @@ final ChopperClient chopper = ChopperClient(
 
 ### VS Code
 
-![Response Example](https://github.com/Arnoodles/pretty_chopper_logger/blob/master/images/sample.png?raw=true 'Response Example')
+![Response Example](https://raw.github.com/Arnooodles/pretty_chopper_logger/main/images/sample.png 'Response Example')
 
 
