@@ -20,15 +20,23 @@ import 'package:http/http.dart' as http;
 /// or in a non-production environment.
 class PrettyChopperLogger implements RequestInterceptor, ResponseInterceptor {
   PrettyChopperLogger({
-    this.maxWidth = 118,
     this.level = Level.body,
   })  : _logBody = level == Level.body,
         _logHeaders = level == Level.body || level == Level.headers;
 
+  /// [Level.none]
+  /// No logs
+  /// [Level.basic]
+  /// Logs request and response lines.
+  /// [Level.headers]
+  /// Logs request and response lines and their respective headers.
+  /// [Level.body]
+  /// Logs request and response lines and their respective headers and bodies (if present).
   final Level level;
+
   final bool _logBody;
   final bool _logHeaders;
-  final int maxWidth;
+  final int _maxWidth = 120;
 
   @override
   FutureOr<Request> onRequest(Request request) async {
@@ -55,14 +63,14 @@ class PrettyChopperLogger implements RequestInterceptor, ResponseInterceptor {
 
     if (_logHeaders) {
       _printHeaderBody(
-        prettyJson: jsonFormat(left(base.headers)),
+        prettyJson: _jsonFormat(left(base.headers)),
         title: 'Headers',
       );
     }
 
     if (_logBody && base is http.Request && bodyMessage.isNotEmpty) {
       _printHeaderBody(
-        prettyJson: jsonFormat(right(bodyMessage)),
+        prettyJson: _jsonFormat(right(bodyMessage)),
         title: 'Body',
       );
     }
@@ -100,14 +108,14 @@ class PrettyChopperLogger implements RequestInterceptor, ResponseInterceptor {
 
     if (_logHeaders) {
       _printHeaderBody(
-        prettyJson: jsonFormat(left(response.headers)),
+        prettyJson: _jsonFormat(left(response.headers)),
         title: 'Headers',
       );
     }
 
     if (_logBody) {
       _printHeaderBody(
-        prettyJson: jsonFormat(right(bodyMessage)),
+        prettyJson: _jsonFormat(right(bodyMessage)),
         title: 'Body',
       );
     }
@@ -115,7 +123,7 @@ class PrettyChopperLogger implements RequestInterceptor, ResponseInterceptor {
     return response;
   }
 
-  String jsonFormat(
+  String _jsonFormat(
     Either<Map<dynamic, dynamic>, String> source,
   ) =>
       JsonEncoder.withIndent(' ' * 2).convert(
@@ -125,7 +133,7 @@ class PrettyChopperLogger implements RequestInterceptor, ResponseInterceptor {
   void _printRequestResponse({String? title, String? text}) {
     log('╔╣ $title');
     log('║  $text');
-    log('╚═${'═' * maxWidth}');
+    log('╚═${'═' * _maxWidth}');
   }
 
   void _printHeaderBody({required String title, required String prettyJson}) {
@@ -139,7 +147,7 @@ class PrettyChopperLogger implements RequestInterceptor, ResponseInterceptor {
             : addBorder += '║   ${element.substring(1, element.length)}\n';
       });
       log(addBorder.trim());
-      log('╚═${'═' * maxWidth}');
+      log('╚═${'═' * _maxWidth}');
     }
   }
 }

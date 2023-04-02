@@ -15,7 +15,10 @@ void main() async {
     ],
   );
 
+  /// Get a reference to the client-bound service instance...
   final sampleService = chopper.getService<SampleService>();
+
+  /// Making a request is as easy as calling a function of the service.
   final response = await sampleService.getMockResponse();
 
   if (response.isSuccessful) {
@@ -26,6 +29,6 @@ void main() async {
     // Error code received from server
     final code = response.statusCode;
     final error = response.error;
-    log('Status:$code,Error:$error');
+    log('Status:$code, Error:$error');
   }
 }
