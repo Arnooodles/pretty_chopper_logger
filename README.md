@@ -5,6 +5,7 @@
 Pretty Chopper logger is a [Chopper](https://pub.dev/packages/chopper) interceptor that logs network calls in a pretty, easy to read format.
 
 
+This package is inspired by [pretty_dio_logger](https://pub.dev/packages/pretty_dio_logger) package.
 ## Usage
 
 Simply add PrettyChopperLogger to your Chopper interceptors.
@@ -25,7 +26,3 @@ final ChopperClient chopper = ChopperClient(
 ### VS Code
 
 ![Response Example](https://raw.github.com/Arnooodles/pretty_chopper_logger/main/images/sample.png 'Response Example')
-<br/>
-<br/>
-This package is inspired by [pretty_dio_logger](https://pub.dev/packages/pretty_dio_logger) package.
-<br/>
