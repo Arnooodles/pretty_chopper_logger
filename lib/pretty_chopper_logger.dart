@@ -2,10 +2,9 @@ library pretty_chopper_logger;
 
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:chopper/chopper.dart';
-import 'package:dartz/dartz.dart';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 /// A [RequestInterceptor] and [ResponseInterceptor] implementation which logs
@@ -63,14 +62,14 @@ class PrettyChopperLogger implements RequestInterceptor, ResponseInterceptor {
 
     if (_logHeaders) {
       _printHeaderBody(
-        prettyJson: _jsonFormat(left(base.headers)),
+        prettyJson: _jsonFormat(base.headers),
         title: 'Headers',
       );
     }
 
     if (_logBody && base is http.Request && bodyMessage.isNotEmpty) {
       _printHeaderBody(
-        prettyJson: _jsonFormat(right(bodyMessage)),
+        prettyJson: _jsonFormat(bodyMessage),
         title: 'Body',
       );
     }
@@ -108,14 +107,14 @@ class PrettyChopperLogger implements RequestInterceptor, ResponseInterceptor {
 
     if (_logHeaders) {
       _printHeaderBody(
-        prettyJson: _jsonFormat(left(response.headers)),
+        prettyJson: _jsonFormat(response.headers),
         title: 'Headers',
       );
     }
 
     if (_logBody) {
       _printHeaderBody(
-        prettyJson: _jsonFormat(right(bodyMessage)),
+        prettyJson: _jsonFormat(bodyMessage),
         title: 'Body',
       );
     }
@@ -123,31 +122,34 @@ class PrettyChopperLogger implements RequestInterceptor, ResponseInterceptor {
     return response;
   }
 
-  String _jsonFormat(
-    Either<Map<dynamic, dynamic>, String> source,
-  ) =>
-      JsonEncoder.withIndent(' ' * 2).convert(
-        source.fold(id, (String src) => const JsonDecoder().convert(src)),
-      );
+  String _jsonFormat(dynamic source) {
+    final JsonEncoder encoder = JsonEncoder.withIndent(' ' * 2);
+    if (source is Map) {
+      return encoder.convert(source);
+    } else if (source is String) {
+      return encoder.convert(const JsonDecoder().convert(source));
+    } else {
+      return '';
+    }
+  }
 
   void _printRequestResponse({String? title, String? text}) {
-    log('╔╣ $title');
-    log('║  $text');
-    log('╚═${'═' * _maxWidth}');
+    debugPrint('╔╣ $title');
+    debugPrint('║  $text');
+    debugPrint('╚═${'═' * _maxWidth}');
   }
 
   void _printHeaderBody({required String title, required String prettyJson}) {
     if (prettyJson.trim().isNotEmpty && prettyJson != '{}') {
-      log('╔╣ $title');
       String addBorder = '';
-
       prettyJson.split('\n').forEach((String element) {
         element.length == 1 && (element == '{' || element == '}')
             ? addBorder += '║  $element\n'
             : addBorder += '║   ${element.substring(1, element.length)}\n';
       });
-      log(addBorder.trim());
-      log('╚═${'═' * _maxWidth}');
+      debugPrint('╔╣ $title');
+      debugPrint(addBorder.trim());
+      debugPrint('╚═${'═' * _maxWidth}');
     }
   }
 }
