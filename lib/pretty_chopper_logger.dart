@@ -87,8 +87,7 @@ class PrettyChopperLogger implements RequestInterceptor, ResponseInterceptor {
     String bodyMessage = '';
     if (base is http.Response) {
       if (base.reasonPhrase != null) {
-        reasonPhrase +=
-            ' ${base.reasonPhrase != reasonPhrase ? base.reasonPhrase : ''}';
+        reasonPhrase += ' ${base.reasonPhrase != reasonPhrase ? base.reasonPhrase : ''}';
       }
 
       if (base.body.isNotEmpty) {
@@ -126,7 +125,7 @@ class PrettyChopperLogger implements RequestInterceptor, ResponseInterceptor {
     final JsonEncoder encoder = JsonEncoder.withIndent(' ' * 2);
     if (source is Map) {
       return encoder.convert(source);
-    } else if (source is String) {
+    } else if (source is String && source.isNotEmpty) {
       return encoder.convert(const JsonDecoder().convert(source));
     } else {
       return '';
