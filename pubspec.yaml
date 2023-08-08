@@ -1,22 +1,22 @@
 name: pretty_chopper_logger
 description: Pretty Chopper logger is a Chopper interceptor that logs network calls in a pretty, easy to read format.
-version: 1.0.6
+version: 1.0.7
 homepage: https://github.com/Arnooodles/pretty_chopper_logger
 
 environment:
-  sdk: ^3.0.0
+  sdk: '>=3.0.0 <4.0.0'
 
 
 dependencies:
-  chopper: ^7.0.0
-  http: ^1.0.0
+  chopper: ^7.0.2
+  http: ^1.1.0
   flutter:
     sdk: flutter
 
 dev_dependencies:
-  build_runner: ^2.4.5
-  chopper_generator: ^7.0.0
-  flutter_lints: ^2.0.1
+  build_runner: ^2.4.6
+  chopper_generator: ^7.0.1
+  flutter_lints: ^2.0.2
 
 
 

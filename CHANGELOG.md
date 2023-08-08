@@ -1,4 +1,8 @@
 
+## [1.0.7]
+
+- chore: update dependencies to latest version
+
 ## [1.0.6]
 
 - fix: empty body string bug (#3)
