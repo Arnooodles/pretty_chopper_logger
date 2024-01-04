@@ -1,0 +1,15 @@
+name: pretty_chopper_logger
+
+on:
+  pull_request:
+    branches:
+      - main
+
+
+
+jobs:
+  build:
+    uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/pana.yml@v1
+    with:
+      min_score: 140
+      

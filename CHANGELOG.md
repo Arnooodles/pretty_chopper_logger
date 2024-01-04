@@ -1,3 +1,7 @@
+## [1.0.9]
+- chore: update dependencies to latest version
+- feat: added pana github worflow 
+
 
 ## [1.0.8]
 
