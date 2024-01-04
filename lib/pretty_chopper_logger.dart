@@ -87,7 +87,8 @@ class PrettyChopperLogger implements RequestInterceptor, ResponseInterceptor {
     String bodyMessage = '';
     if (base is http.Response) {
       if (base.reasonPhrase != null) {
-        reasonPhrase += ' ${base.reasonPhrase != reasonPhrase ? base.reasonPhrase : ''}';
+        reasonPhrase +=
+            ' ${base.reasonPhrase != reasonPhrase ? base.reasonPhrase : ''}';
       }
 
       if (base.body.isNotEmpty) {
