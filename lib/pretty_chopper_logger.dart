@@ -129,4 +129,3 @@ class PrettyChopperLogger implements Interceptor {
     }
   }
 }
-
