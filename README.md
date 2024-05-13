@@ -2,7 +2,7 @@
 
 [![Pub](https://img.shields.io/pub/v/pretty_chopper_logger.svg)](https://pub.dev/packages/pretty_chopper_logger)
 
-Pretty Chopper logger is a Chopper interceptor designed to enhance the logging of network calls in Dart applications. Inspired by the popular `pretty_dio_logger` package, it aims to provide developers with a clear and readable format for debugging network requests and responses.
+Pretty Chopper logger is a Chopper interceptor designed to enhance the logging of network calls in Dart applications. Inspired by the popular  [pretty_dio_logger](https://pub.dev/packages/pretty_dio_logger) package, it aims to provide developers with a clear and readable format for debugging network requests and responses.
 
 ## Features
 
