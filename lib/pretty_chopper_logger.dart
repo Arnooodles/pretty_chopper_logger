@@ -7,9 +7,10 @@ import 'package:chopper/chopper.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
-/// A [RequestInterceptor] and [ResponseInterceptor] implementation which logs
-/// HTTP request and response data.
+/// A Chopper interceptor for logging HTTP requests and responses in a pretty format.
 ///
+/// This interceptor logs request and response details such as method, URL, headers, and body (if enabled).
+/// It provides a formatted output for easier debugging and understanding of network calls.
 /// Log levels can be set by applying [level] for more fine grained control
 /// over amount of information being logged.
 ///
@@ -17,7 +18,8 @@ import 'package:http/http.dart' as http;
 /// leak sensitive information, such as `Authorization` headers and user data
 /// in response bodies. This interceptor should only be used in a controlled way
 /// or in a non-production environment.
-class PrettyChopperLogger implements RequestInterceptor, ResponseInterceptor {
+
+class PrettyChopperLogger implements Interceptor {
   PrettyChopperLogger({
     this.level = Level.body,
   })  : _logBody = level == Level.body,
@@ -38,99 +40,62 @@ class PrettyChopperLogger implements RequestInterceptor, ResponseInterceptor {
   final int _maxWidth = 120;
 
   @override
-  FutureOr<Request> onRequest(Request request) async {
-    if (level == Level.none) return request;
-
-    final http.BaseRequest base = await request.toBaseRequest();
-
+  FutureOr<Response<BodyType>> intercept<BodyType>(
+      Chain<BodyType> chain) async {
+    final request = chain.request;
+    final base = await request.toBaseRequest();
+    final headers = _logHeaders ? _jsonFormat(base.headers) : '';
+    final body = _logBody && base is http.Request ? _jsonFormat(base.body) : '';
     String startRequestMessage = base.url.toString();
-    String bodyMessage = '';
     if (base is http.Request) {
       if (base.body.isNotEmpty) {
-        bodyMessage = base.body;
-
         if (!_logHeaders) {
           startRequestMessage += ' (${base.bodyBytes.length}-byte body)';
         }
       }
     }
-
     _printRequestResponse(
       title: 'Request ║ ${base.method} ',
       text: startRequestMessage,
     );
-
     if (_logHeaders) {
-      _printHeaderBody(
-        prettyJson: _jsonFormat(base.headers),
-        title: 'Headers',
-      );
+      _printHeaderBody(title: 'Headers', prettyJson: headers);
+    }
+    if (_logBody && base is http.Request) {
+      _printHeaderBody(title: 'Body', prettyJson: body);
     }
 
-    if (_logBody && base is http.Request && bodyMessage.isNotEmpty) {
-      _printHeaderBody(
-        prettyJson: _jsonFormat(bodyMessage),
-        title: 'Body',
-      );
-    }
+    final response = await chain.proceed(request);
 
-    return request;
-  }
-
-  @override
-  FutureOr<Response<dynamic>> onResponse(Response<dynamic> response) async {
-    if (level == Level.none) return response;
-
-    final http.BaseResponse base = response.base;
+    final baseResponse = response.base;
     String bytes = '';
     String reasonPhrase = response.statusCode.toString();
-    String bodyMessage = '';
-    if (base is http.Response) {
-      if (base.reasonPhrase != null) {
-        reasonPhrase +=
-            ' ${base.reasonPhrase != reasonPhrase ? base.reasonPhrase : ''}';
-      }
-
-      if (base.body.isNotEmpty) {
-        bodyMessage = base.body;
-
-        if (!_logBody && !_logHeaders) {
-          bytes = ' (${response.bodyBytes.length}-byte body)';
-        }
+    if (baseResponse.reasonPhrase != null) {
+      reasonPhrase +=
+          ' ${baseResponse.reasonPhrase != reasonPhrase ? baseResponse.reasonPhrase : ''}';
+    }
+    if (baseResponse.contentLength != null) {
+      if (!_logBody && !_logHeaders) {
+        bytes = ' (${response.bodyBytes.length}-byte body)';
       }
     }
+    final responseHeaders =
+        _logHeaders ? _jsonFormat(baseResponse.headers) : '';
+    final responseBody = _logBody ? _jsonFormat(response.bodyString) : '';
 
     _printRequestResponse(
-      title: 'Response ║ ${base.request?.method} ║ Status: $reasonPhrase',
-      text: '${base.request?.url}$bytes',
+      title:
+          'Response ║ ${baseResponse.request?.method} ║ Status: $reasonPhrase',
+      text: '${baseResponse.request?.url}$bytes',
     );
-
     if (_logHeaders) {
-      _printHeaderBody(
-        prettyJson: _jsonFormat(response.headers),
-        title: 'Headers',
-      );
+      _printHeaderBody(title: 'Response Headers', prettyJson: responseHeaders);
     }
-
     if (_logBody) {
-      _printHeaderBody(
-        prettyJson: _jsonFormat(bodyMessage),
-        title: 'Body',
-      );
+      _printHeaderBody(title: 'Response Body', prettyJson: responseBody);
     }
 
     return response;
-  }
-
-  String _jsonFormat(dynamic source) {
-    final JsonEncoder encoder = JsonEncoder.withIndent(' ' * 2);
-    if (source is Map) {
-      return encoder.convert(source);
-    } else if (source is String && source.isNotEmpty) {
-      return encoder.convert(const JsonDecoder().convert(source));
-    } else {
-      return '';
-    }
   }
 
   void _printRequestResponse({String? title, String? text}) {
@@ -150,6 +115,17 @@ class PrettyChopperLogger implements RequestInterceptor, ResponseInterceptor {
       debugPrint('╔╣ $title');
       debugPrint(addBorder.trim());
       debugPrint('╚═${'═' * _maxWidth}');
+    }
+  }
+
+  String _jsonFormat(dynamic source) {
+    final JsonEncoder encoder = JsonEncoder.withIndent(' ' * 2);
+    if (source is Map) {
+      return encoder.convert(source);
+    } else if (source is String && source.isNotEmpty) {
+      return encoder.convert(const JsonDecoder().convert(source));
+    } else {
+      return '';
     }
   }
 }

@@ -1,13 +1,19 @@
+## [1.0.12]
+
+- chore: update dependencies to latest version
+
 ## [1.0.11]
+
 - chore: update dependencies to latest version
 
 ## [1.0.10]
+
 - chore: update dependencies to latest version
 
 ## [1.0.9]
-- chore: update dependencies to latest version
-- feat: added pana github worflow 
 
+- chore: update dependencies to latest version
+- feat: added pana github worflow
 
 ## [1.0.8]
 
@@ -21,7 +27,7 @@
 
 - fix: empty body string bug (#3)
 - chore: update dependencies to latest version
-  
+
 ## [1.0.5]
 
 - feat: update to flutter 3.10 and dart 3.0
