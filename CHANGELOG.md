@@ -1,5 +1,8 @@
-## [1.0.12]
 
+## [1.2.0]
+- docs: added some library level documentation comments
+- docs: updated README.md
+- fix: fixed breaking changes issues
 - chore: update dependencies to latest version
 
 ## [1.0.11]
