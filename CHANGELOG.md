@@ -1,3 +1,6 @@
+## [1.2.1]
+- chore: update dependencies to latest version
+
 
 ## [1.2.0]
 - docs: added some library level documentation comments
