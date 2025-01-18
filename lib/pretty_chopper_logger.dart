@@ -1,6 +1,6 @@
 /// Pretty Chopper logger is a Chopper interceptor designed to enhance the logging of network calls in Dart applications.
 
-library pretty_chopper_logger;
+library;
 
 import 'dart:async';
 import 'dart:convert';
