@@ -22,10 +22,9 @@ import 'package:http/http.dart' as http;
 /// or in a non-production environment.
 
 class PrettyChopperLogger implements Interceptor {
-  PrettyChopperLogger({
-    this.level = Level.body,
-  })  : _logBody = level == Level.body,
-        _logHeaders = level == Level.body || level == Level.headers;
+  PrettyChopperLogger({this.level = Level.body})
+    : _logBody = level == Level.body,
+      _logHeaders = level == Level.body || level == Level.headers;
 
   /// [Level.none]
   /// No logs
@@ -44,7 +43,8 @@ class PrettyChopperLogger implements Interceptor {
   /// Interceptors are used for intercepting request, responses and preforming operations on them.
   @override
   FutureOr<Response<BodyType>> intercept<BodyType>(
-      Chain<BodyType> chain) async {
+    Chain<BodyType> chain,
+  ) async {
     final request = chain.request;
     final base = await request.toBaseRequest();
     final headers = _logHeaders ? _jsonFormat(base.headers) : '';
@@ -82,8 +82,9 @@ class PrettyChopperLogger implements Interceptor {
         bytes = ' (${response.bodyBytes.length}-byte body)';
       }
     }
-    final responseHeaders =
-        _logHeaders ? _jsonFormat(baseResponse.headers) : '';
+    final responseHeaders = _logHeaders
+        ? _jsonFormat(baseResponse.headers)
+        : '';
     final responseBody = _logBody ? _jsonFormat(response.bodyString) : '';
 
     _printRequestResponse(
@@ -126,7 +127,14 @@ class PrettyChopperLogger implements Interceptor {
     if (source is Map) {
       return encoder.convert(source);
     } else if (source is String && source.isNotEmpty) {
-      return encoder.convert(const JsonDecoder().convert(source));
+      //If the response body is not valid JSON, JsonDecoder().convert(source) will throw an exception.
+      //You can catch and handle this gracefully to avoid breaking the logger.
+      try {
+        return encoder.convert(const JsonDecoder().convert(source));
+      } catch (_) {
+        // Fallback to plain string if not JSON
+        return source;
+      }
     } else {
       return '';
     }
