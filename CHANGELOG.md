@@ -1,3 +1,12 @@
+## [1.3.0]
+- feat: add a runnable example project for quick testing and reference
+- feat: make indents and border width fully customizable
+- perf: optimize logging internals with StringBuffer, pre-computed border lines, efficient JSON parsing, and improved code organization
+- refactor: migrate to very_good_analysis (was flutter_lints)
+- docs: major README improvements and clarifications
+- docs: update sample image for documentation
+- chore: update all dependencies to latest versions
+
 ## [1.2.3]
 - chore: update dependencies to latest version
 
