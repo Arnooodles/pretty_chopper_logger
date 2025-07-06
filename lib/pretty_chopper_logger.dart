@@ -28,7 +28,9 @@ class PrettyChopperLogger implements Interceptor {
   /// [maxWidth] sets the maximum width for border lines (defaults to 120).
   /// [indentSize] sets the indentation size for JSON formatting (defaults to 2).
   PrettyChopperLogger({this.level = Level.body, this.maxWidth = 120, this.indentSize = 2})
-    : _logBody = level == Level.body,
+    : assert(maxWidth > 0, 'maxWidth must be positive'),
+      assert(indentSize >= 0, 'indentSize must be non-negative'),
+      _logBody = level == Level.body,
       _logHeaders = level == Level.body || level == Level.headers,
       _logBasic = level != Level.none,
       _borderLine = '═' * maxWidth,
