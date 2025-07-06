@@ -1,3 +1,10 @@
+## [1.3.0]
+- feat: add runnable example project for quick testing and reference
+- refactor: optimize logging internals using string buffers for better performance
+- docs: major README improvements and clarifications
+- chore: update sample image for docs
+- chore: bump all dependencies to latest versions
+
 ## [1.2.3]
 - chore: update dependencies to latest version
 
