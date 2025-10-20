@@ -1,8 +1,7 @@
 import 'package:chopper/chopper.dart';
+import 'package:example/sample_service.dart';
 import 'package:flutter/material.dart';
 import 'package:pretty_chopper_logger/pretty_chopper_logger.dart';
-
-import 'sample_service.dart';
 
 void main() {
   runApp(const MyApp());
@@ -13,7 +12,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(title: 'Pretty Chopper Logger Example', home: const MyHomePage());
+    return const MaterialApp(title: 'Pretty Chopper Logger Example', home: MyHomePage());
   }
 }
 
@@ -34,7 +33,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     try {
       final chopper = ChopperClient(
-        baseUrl: Uri.parse("https://dummyjson.com/"),
+        baseUrl: Uri.parse('https://dummyjson.com/'),
         interceptors: [PrettyChopperLogger()],
         services: [SampleService.create()],
       );
@@ -73,7 +72,7 @@ class _MyHomePageState extends State<MyHomePage> {
           children: [
             ElevatedButton(onPressed: _runExample, child: const Text('Run Example')),
             const SizedBox(height: 20),
-            Padding(padding: const EdgeInsets.all(16.0), child: Text(_result)),
+            Padding(padding: const EdgeInsets.all(16), child: Text(_result)),
           ],
         ),
       ),

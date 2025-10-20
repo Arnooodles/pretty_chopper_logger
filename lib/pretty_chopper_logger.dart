@@ -1,4 +1,5 @@
-/// Pretty Chopper logger is a Chopper interceptor designed to enhance the logging of network calls in Dart applications.
+/// Pretty Chopper logger is a Chopper interceptor designed to enhance the
+/// logging of network calls in Dart applications.
 
 library;
 
@@ -9,17 +10,20 @@ import 'package:chopper/chopper.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
-/// A Chopper interceptor for logging HTTP requests and responses in a pretty format.
+/// A Chopper interceptor for logging HTTP requests and responses in a
+/// pretty format.
 ///
-/// This interceptor logs request and response details such as method, URL, headers, and body (if enabled).
-/// It provides a formatted output for easier debugging and understanding of network calls.
-/// Log levels can be set by applying [level] for more fine grained control
-/// over amount of information being logged.
+/// This interceptor logs request and response details such as method,
+/// URL, headers, and body (if enabled). It provides a formatted output
+/// for easier debugging and understanding of network calls. Log levels
+/// can be set by applying [level] for more fine grained control over
+/// amount of information being logged. over amount of information
+/// being logged.
 ///
-/// **Warning:** Log messages written by this interceptor have the potential to
-/// leak sensitive information, such as `Authorization` headers and user data
-/// in response bodies. This interceptor should only be used in a controlled way
-/// or in a non-production environment.
+/// **Warning:** Log messages written by this interceptor have the
+/// potential to leak sensitive information, such as `Authorization`
+/// headers and user data in response bodies. This interceptor should
+/// only be used in a controlled way or in a non-production environment.
 
 class PrettyChopperLogger implements Interceptor {
   /// Creates a PrettyChopperLogger with the specified configuration.
@@ -27,14 +31,17 @@ class PrettyChopperLogger implements Interceptor {
   /// [level] controls the amount of detail logged (defaults to [Level.body]).
   /// [maxWidth] sets the maximum width for border lines (defaults to 120).
   /// [indentSize] sets the indentation size for JSON formatting (defaults to 2).
-  PrettyChopperLogger({this.level = Level.body, this.maxWidth = 120, this.indentSize = 2})
-    : assert(maxWidth > 0, 'maxWidth must be positive'),
-      assert(indentSize >= 0, 'indentSize must be non-negative'),
-      _logBody = level == Level.body,
-      _logHeaders = level == Level.body || level == Level.headers,
-      _logBasic = level != Level.none,
-      _borderLine = '═' * maxWidth,
-      _encoder = JsonEncoder.withIndent(' ' * indentSize);
+  PrettyChopperLogger({
+    this.level = Level.body,
+    this.maxWidth = 120,
+    this.indentSize = 2,
+  }) : assert(maxWidth > 0, 'maxWidth must be positive'),
+       assert(indentSize >= 0, 'indentSize must be non-negative'),
+       _logBody = level == Level.body,
+       _logHeaders = level == Level.body || level == Level.headers,
+       _logBasic = level != Level.none,
+       _borderLine = '═' * maxWidth,
+       _encoder = JsonEncoder.withIndent(' ' * indentSize);
 
   /// [Level.none]
   /// No logs
@@ -62,7 +69,9 @@ class PrettyChopperLogger implements Interceptor {
 
   /// Interceptors are used for intercepting request, responses and performing operations on them.
   @override
-  FutureOr<Response<BodyType>> intercept<BodyType>(Chain<BodyType> chain) async {
+  FutureOr<Response<BodyType>> intercept<BodyType>(
+    Chain<BodyType> chain,
+  ) async {
     if (!_logBasic) return chain.proceed(chain.request);
 
     final request = chain.request;
@@ -84,7 +93,10 @@ class PrettyChopperLogger implements Interceptor {
     if (isRequest && hasBody && !_logHeaders) {
       buffer.write(' (${base.bodyBytes.length}-byte body)');
     }
-    _printRequestOrResponse(title: 'Request ║ ${base.method}', text: buffer.toString());
+    _printRequestOrResponse(
+      title: 'Request ║ ${base.method}',
+      text: buffer.toString(),
+    );
     if (_logHeaders) {
       final headers = _jsonFormat(base.headers);
       _printHeaderOrBody(title: 'Headers', prettyJson: headers);
@@ -100,7 +112,8 @@ class PrettyChopperLogger implements Interceptor {
     final buffer = StringBuffer(response.statusCode.toString());
 
     // Build reason phrase
-    if (baseResponse.reasonPhrase != null && baseResponse.reasonPhrase != response.statusCode.toString()) {
+    if (baseResponse.reasonPhrase != null &&
+        baseResponse.reasonPhrase != response.statusCode.toString()) {
       buffer.write(' ${baseResponse.reasonPhrase}');
     }
     final reasonPhrase = buffer.toString();
@@ -114,10 +127,17 @@ class PrettyChopperLogger implements Interceptor {
     }
     final urlText = buffer.toString();
 
-    _printRequestOrResponse(title: 'Response ║ ${baseResponse.request?.method} ║ Status: $reasonPhrase', text: urlText);
+    _printRequestOrResponse(
+      title:
+          'Response ║ ${baseResponse.request?.method} ║ Status: $reasonPhrase',
+      text: urlText,
+    );
     if (_logHeaders) {
       final responseHeaders = _jsonFormat(baseResponse.headers);
-      _printHeaderOrBody(title: 'Response Headers', prettyJson: responseHeaders);
+      _printHeaderOrBody(
+        title: 'Response Headers',
+        prettyJson: responseHeaders,
+      );
     }
     if (_logBody) {
       final responseBody = _jsonFormat(response.bodyString);
@@ -163,7 +183,8 @@ class PrettyChopperLogger implements Interceptor {
 
       // Quick check for JSON-like content before attempting parse
       final trimmed = source.trim();
-      if ((trimmed.startsWith('{') && trimmed.endsWith('}')) || (trimmed.startsWith('[') && trimmed.endsWith(']'))) {
+      if ((trimmed.startsWith('{') && trimmed.endsWith('}')) ||
+          (trimmed.startsWith('[') && trimmed.endsWith(']'))) {
         try {
           return _encoder.convert(_decoder.convert(source));
         } catch (_) {

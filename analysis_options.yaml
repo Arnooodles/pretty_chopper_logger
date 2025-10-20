@@ -11,4 +11,8 @@ linter:
   rules:
     lines_longer_than_80_chars: false
     avoid_catches_without_on_clauses: false
-    
+
+
+formatter: 
+  page_width: 80
+  trailing_commas: automate

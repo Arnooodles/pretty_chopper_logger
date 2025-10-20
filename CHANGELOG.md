@@ -1,3 +1,6 @@
+## [1.3.1]
+- chore: update all dependencies to latest versions
+
 ## [1.3.0]
 - feat: add a runnable example project for quick testing and reference
 - feat: make indents and border width fully customizable

@@ -11,4 +11,5 @@ linter:
   rules:
     lines_longer_than_80_chars: false
     avoid_catches_without_on_clauses: false
+    public_member_api_docs: false
     
