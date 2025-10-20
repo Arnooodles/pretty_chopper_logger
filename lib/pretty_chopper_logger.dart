@@ -27,14 +27,17 @@ class PrettyChopperLogger implements Interceptor {
   /// [level] controls the amount of detail logged (defaults to [Level.body]).
   /// [maxWidth] sets the maximum width for border lines (defaults to 120).
   /// [indentSize] sets the indentation size for JSON formatting (defaults to 2).
-  PrettyChopperLogger({this.level = Level.body, this.maxWidth = 120, this.indentSize = 2})
-    : assert(maxWidth > 0, 'maxWidth must be positive'),
-      assert(indentSize >= 0, 'indentSize must be non-negative'),
-      _logBody = level == Level.body,
-      _logHeaders = level == Level.body || level == Level.headers,
-      _logBasic = level != Level.none,
-      _borderLine = '═' * maxWidth,
-      _encoder = JsonEncoder.withIndent(' ' * indentSize);
+  PrettyChopperLogger({
+    this.level = Level.body,
+    this.maxWidth = 120,
+    this.indentSize = 2,
+  }) : assert(maxWidth > 0, 'maxWidth must be positive'),
+       assert(indentSize >= 0, 'indentSize must be non-negative'),
+       _logBody = level == Level.body,
+       _logHeaders = level == Level.body || level == Level.headers,
+       _logBasic = level != Level.none,
+       _borderLine = '═' * maxWidth,
+       _encoder = JsonEncoder.withIndent(' ' * indentSize);
 
   /// [Level.none]
   /// No logs
@@ -62,7 +65,9 @@ class PrettyChopperLogger implements Interceptor {
 
   /// Interceptors are used for intercepting request, responses and performing operations on them.
   @override
-  FutureOr<Response<BodyType>> intercept<BodyType>(Chain<BodyType> chain) async {
+  FutureOr<Response<BodyType>> intercept<BodyType>(
+    Chain<BodyType> chain,
+  ) async {
     if (!_logBasic) return chain.proceed(chain.request);
 
     final request = chain.request;
@@ -84,7 +89,10 @@ class PrettyChopperLogger implements Interceptor {
     if (isRequest && hasBody && !_logHeaders) {
       buffer.write(' (${base.bodyBytes.length}-byte body)');
     }
-    _printRequestOrResponse(title: 'Request ║ ${base.method}', text: buffer.toString());
+    _printRequestOrResponse(
+      title: 'Request ║ ${base.method}',
+      text: buffer.toString(),
+    );
     if (_logHeaders) {
       final headers = _jsonFormat(base.headers);
       _printHeaderOrBody(title: 'Headers', prettyJson: headers);
@@ -100,7 +108,8 @@ class PrettyChopperLogger implements Interceptor {
     final buffer = StringBuffer(response.statusCode.toString());
 
     // Build reason phrase
-    if (baseResponse.reasonPhrase != null && baseResponse.reasonPhrase != response.statusCode.toString()) {
+    if (baseResponse.reasonPhrase != null &&
+        baseResponse.reasonPhrase != response.statusCode.toString()) {
       buffer.write(' ${baseResponse.reasonPhrase}');
     }
     final reasonPhrase = buffer.toString();
@@ -114,10 +123,17 @@ class PrettyChopperLogger implements Interceptor {
     }
     final urlText = buffer.toString();
 
-    _printRequestOrResponse(title: 'Response ║ ${baseResponse.request?.method} ║ Status: $reasonPhrase', text: urlText);
+    _printRequestOrResponse(
+      title:
+          'Response ║ ${baseResponse.request?.method} ║ Status: $reasonPhrase',
+      text: urlText,
+    );
     if (_logHeaders) {
       final responseHeaders = _jsonFormat(baseResponse.headers);
-      _printHeaderOrBody(title: 'Response Headers', prettyJson: responseHeaders);
+      _printHeaderOrBody(
+        title: 'Response Headers',
+        prettyJson: responseHeaders,
+      );
     }
     if (_logBody) {
       final responseBody = _jsonFormat(response.bodyString);
@@ -163,7 +179,8 @@ class PrettyChopperLogger implements Interceptor {
 
       // Quick check for JSON-like content before attempting parse
       final trimmed = source.trim();
-      if ((trimmed.startsWith('{') && trimmed.endsWith('}')) || (trimmed.startsWith('[') && trimmed.endsWith(']'))) {
+      if ((trimmed.startsWith('{') && trimmed.endsWith('}')) ||
+          (trimmed.startsWith('[') && trimmed.endsWith(']'))) {
         try {
           return _encoder.convert(_decoder.convert(source));
         } catch (_) {
