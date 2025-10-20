@@ -1,4 +1,5 @@
-/// Pretty Chopper logger is a Chopper interceptor designed to enhance the logging of network calls in Dart applications.
+/// Pretty Chopper logger is a Chopper interceptor designed to enhance the
+/// logging of network calls in Dart applications.
 
 library;
 
@@ -9,17 +10,20 @@ import 'package:chopper/chopper.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
-/// A Chopper interceptor for logging HTTP requests and responses in a pretty format.
+/// A Chopper interceptor for logging HTTP requests and responses in a
+/// pretty format.
 ///
-/// This interceptor logs request and response details such as method, URL, headers, and body (if enabled).
-/// It provides a formatted output for easier debugging and understanding of network calls.
-/// Log levels can be set by applying [level] for more fine grained control
-/// over amount of information being logged.
+/// This interceptor logs request and response details such as method,
+/// URL, headers, and body (if enabled). It provides a formatted output
+/// for easier debugging and understanding of network calls. Log levels
+/// can be set by applying [level] for more fine grained control over
+/// amount of information being logged. over amount of information
+/// being logged.
 ///
-/// **Warning:** Log messages written by this interceptor have the potential to
-/// leak sensitive information, such as `Authorization` headers and user data
-/// in response bodies. This interceptor should only be used in a controlled way
-/// or in a non-production environment.
+/// **Warning:** Log messages written by this interceptor have the
+/// potential to leak sensitive information, such as `Authorization`
+/// headers and user data in response bodies. This interceptor should
+/// only be used in a controlled way or in a non-production environment.
 
 class PrettyChopperLogger implements Interceptor {
   /// Creates a PrettyChopperLogger with the specified configuration.
