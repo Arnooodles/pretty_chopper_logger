@@ -1,3 +1,6 @@
+## [1.3.2]
+- chore: update all dependencies to latest versions
+
 ## [1.3.1]
 - chore: update all dependencies to latest versions
 

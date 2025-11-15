@@ -50,7 +50,8 @@ class PrettyChopperLogger implements Interceptor {
   /// [Level.headers]
   /// Logs request and response lines and their respective headers.
   /// [Level.body]
-  /// Logs request and response lines and their respective headers and bodies (if present).
+  /// Logs request and response lines and their respective headers
+  ///  and bodies (if present).
   final Level level;
 
   /// Maximum width for the border line
@@ -67,7 +68,8 @@ class PrettyChopperLogger implements Interceptor {
   final JsonEncoder _encoder;
   static const JsonDecoder _decoder = JsonDecoder();
 
-  /// Interceptors are used for intercepting request, responses and performing operations on them.
+  /// Interceptors are used for intercepting request, responses and
+  /// performing operations on them.
   @override
   FutureOr<Response<BodyType>> intercept<BodyType>(
     Chain<BodyType> chain,
