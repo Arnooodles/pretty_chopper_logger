@@ -176,29 +176,29 @@ class PrettyChopperLogger implements Interceptor {
   String _jsonFormat(dynamic source) {
     if (source == null || source == '') return '';
 
-    try {
-      if (source is Map || source is List) {
-        return _encoder.convert(source);
-      }
+    if (source is String) {
+      if (source.isEmpty) return '';
 
-      if (source is String) {
-        if (source.isEmpty) return '';
-        final trimmed = source.trim();
-        // Check if it looks like JSON
-        if ((trimmed.startsWith('{') && trimmed.endsWith('}')) ||
-            (trimmed.startsWith('[') && trimmed.endsWith(']'))) {
-          try {
-            return _encoder.convert(_decoder.convert(source));
-          } catch (_) {
-            return source;
-          }
+      final trimmed = source.trim();
+      if ((trimmed.startsWith('{') && trimmed.endsWith('}')) ||
+          (trimmed.startsWith('[') && trimmed.endsWith(']'))) {
+        try {
+          return _encoder.convert(_decoder.convert(source));
+        } catch (_) {
+          // Not a valid JSON string, return as is.
+          return source;
         }
-        return source;
       }
-    } catch (_) {
-      // Fallback for any conversion errors
+      // Not a JSON-like string, return as is.
+      return source;
     }
 
-    return source.toString();
+    // For other types (Map, List, custom objects), try to encode.
+    try {
+      return _encoder.convert(source);
+    } catch (_) {
+      // If encoding fails, fall back to toString().
+      return source.toString();
+    }
   }
 }
