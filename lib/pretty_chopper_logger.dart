@@ -165,7 +165,7 @@ class PrettyChopperLogger implements Interceptor {
       if (line.length == 1 && (line == '{' || line == '}')) {
         buffer.writeln('║  $line');
       } else {
-        buffer.writeln('║   ${line.substring(1)}');
+        buffer.writeln('║  ${line.substring(1)}');
       }
     }
 
@@ -176,32 +176,28 @@ class PrettyChopperLogger implements Interceptor {
   String _jsonFormat(dynamic source) {
     if (source == null || source == '') return '';
 
-    if (source is Map) {
-      return _encoder.convert(source);
-    }
-
     if (source is String) {
       if (source.isEmpty) return '';
 
-      // Quick check for JSON-like content before attempting parse
       final trimmed = source.trim();
       if ((trimmed.startsWith('{') && trimmed.endsWith('}')) ||
           (trimmed.startsWith('[') && trimmed.endsWith(']'))) {
         try {
           return _encoder.convert(_decoder.convert(source));
         } catch (_) {
-          // Fallback to plain string if JSON parsing fails
+          // Not a valid JSON string, return as is.
           return source;
         }
       }
-      // Not JSON-like, return as-is
+      // Not a JSON-like string, return as is.
       return source;
     }
 
-    // Handle other types (List, numbers, etc.)
+    // For other types (Map, List, custom objects), try to encode.
     try {
       return _encoder.convert(source);
     } catch (_) {
+      // If encoding fails, fall back to toString().
       return source.toString();
     }
   }
