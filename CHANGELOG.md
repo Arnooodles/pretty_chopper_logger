@@ -1,10 +1,18 @@
+## [1.3.3]
+
+- chore: update all dependencies to latest versions
+-
+
 ## [1.3.2]
+
 - chore: update all dependencies to latest versions
 
 ## [1.3.1]
+
 - chore: update all dependencies to latest versions
 
 ## [1.3.0]
+
 - feat: add a runnable example project for quick testing and reference
 - feat: make indents and border width fully customizable
 - perf: optimize logging internals with StringBuffer, pre-computed border lines, efficient JSON parsing, and improved code organization
@@ -14,16 +22,19 @@
 - chore: update all dependencies to latest versions
 
 ## [1.2.3]
+
 - chore: update dependencies to latest version
 
 ## [1.2.2]
+
 - chore: update dependencies to latest version
 
 ## [1.2.1]
+
 - chore: update dependencies to latest version
 
-
 ## [1.2.0]
+
 - docs: added some library level documentation comments
 - docs: updated README.md
 - fix: fixed breaking changes issues

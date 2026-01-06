@@ -165,7 +165,7 @@ class PrettyChopperLogger implements Interceptor {
       if (line.length == 1 && (line == '{' || line == '}')) {
         buffer.writeln('║  $line');
       } else {
-        buffer.writeln('║   ${line.substring(1)}');
+        buffer.writeln('║  ${line.substring(1)}');
       }
     }
 
@@ -176,33 +176,29 @@ class PrettyChopperLogger implements Interceptor {
   String _jsonFormat(dynamic source) {
     if (source == null || source == '') return '';
 
-    if (source is Map) {
-      return _encoder.convert(source);
-    }
-
-    if (source is String) {
-      if (source.isEmpty) return '';
-
-      // Quick check for JSON-like content before attempting parse
-      final trimmed = source.trim();
-      if ((trimmed.startsWith('{') && trimmed.endsWith('}')) ||
-          (trimmed.startsWith('[') && trimmed.endsWith(']'))) {
-        try {
-          return _encoder.convert(_decoder.convert(source));
-        } catch (_) {
-          // Fallback to plain string if JSON parsing fails
-          return source;
-        }
-      }
-      // Not JSON-like, return as-is
-      return source;
-    }
-
-    // Handle other types (List, numbers, etc.)
     try {
-      return _encoder.convert(source);
+      if (source is Map || source is List) {
+        return _encoder.convert(source);
+      }
+
+      if (source is String) {
+        if (source.isEmpty) return '';
+        final trimmed = source.trim();
+        // Check if it looks like JSON
+        if ((trimmed.startsWith('{') && trimmed.endsWith('}')) ||
+            (trimmed.startsWith('[') && trimmed.endsWith(']'))) {
+          try {
+            return _encoder.convert(_decoder.convert(source));
+          } catch (_) {
+            return source;
+          }
+        }
+        return source;
+      }
     } catch (_) {
-      return source.toString();
+      // Fallback for any conversion errors
     }
+
+    return source.toString();
   }
 }
