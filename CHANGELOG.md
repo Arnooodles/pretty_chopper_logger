@@ -1,6 +1,8 @@
 ## [1.3.3]
 
 - chore: update all dependencies to latest versions
+- fix: Correct indentation for formatted JSON output.
+- refactor: Simplify and improve JSON formatting logic.
 
 ## [1.3.2]
 
